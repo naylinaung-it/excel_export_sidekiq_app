@@ -60,13 +60,19 @@ class ProductsController < ApplicationController
     end
   end
 
-  def export
-    @products = Product.all
+  # def export
+  #   @products = Product.all
 
-    respond_to do |format|
-      format.csv { send_data generate_csv(@products), filename: "products-#{Date.today}.csv" }
-      format.xlsx { send_data generate_xlsx(@products), filename: "products-#{Date.today}.xlsx" }
-    end
+  #   respond_to do |format|
+  #     format.csv { send_data generate_csv(@products), filename: "products-#{Date.today}.csv" }
+  #     format.xlsx { send_data generate_xlsx(@products), filename: "products-#{Date.today}.xlsx" }
+  #   end
+  # end
+
+  def export
+    puts "----------------------export---------------"
+    job_id = ExportProductJob.perform_async
+    puts "----------------------export---------------"
   end
 
   private

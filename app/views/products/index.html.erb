@@ -1,0 +1,25 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Products</h1>
+
+<table>
+  <thead>
+    <tr>
+      <td>Name</td>
+      <td>Description</td>
+      <td>Price</td>
+    </tr>
+  </thead>
+  <tbody>
+  <% @products.each do |product| %>
+    <tr>
+      <td><%= product.name %></td>
+      <td><%= product.description %></td>
+      <td><%= product.price %></td>
+      <td><%= link_to "Show this product", product %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= link_to "New product", new_product_path %>

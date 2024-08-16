@@ -65,3 +65,8 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+
+# add for background job
+gem 'sidekiq'
+gem 'sidekiq-status'

@@ -66,7 +66,13 @@ group :test do
   gem "selenium-webdriver"
 end
 
+# excel export
+gem 'caxlsx'
+gem 'caxlsx_rails'
+
 
 # add for background job
 gem 'sidekiq'
 gem 'sidekiq-status'
+
+

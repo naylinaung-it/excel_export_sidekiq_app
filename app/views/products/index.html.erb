@@ -1,5 +1,8 @@
 <p style="color: green"><%= notice %></p>
 
+<%= link_to 'Export CSV', export_products_path(format: :csv) %> |
+<%= link_to 'Export Excel', export_products_path(format: :xlsx) %>
+
 <h1>Products</h1>
 
 <table>

@@ -1,3 +1,6 @@
+require 'csv'
+require 'caxlsx'
+
 class ProductsController < ApplicationController
   before_action :set_product, only: %i[ show edit update destroy ]
 
@@ -57,6 +60,15 @@ class ProductsController < ApplicationController
     end
   end
 
+  def export
+    @products = Product.all
+
+    respond_to do |format|
+      format.csv { send_data generate_csv(@products), filename: "products-#{Date.today}.csv" }
+      format.xlsx { send_data generate_xlsx(@products), filename: "products-#{Date.today}.xlsx" }
+    end
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_product
@@ -66,5 +78,28 @@ class ProductsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def product_params
       params.require(:product).permit(:name, :description, :price)
+    end
+
+    def generate_csv(products)
+      CSV.generate(headers: true) do |csv|
+        csv << ["ID", "Name", "Description", "Price"]
+  
+        products.each do |product|
+          csv << [product.id, product.name, product.description, product.price ]
+        end
+      end
+    end
+  
+    def generate_xlsx(products)
+      p = Axlsx::Package.new
+      wb = p.workbook
+      wb.add_worksheet(name: "Products") do |sheet|
+        sheet.add_row ["ID", "Name", "Description", "Price"]
+  
+        products.each do |product|
+          sheet.add_row [product.id, product.name, product.description, product.price ]
+        end
+      end
+      p.to_stream.read
     end
 end

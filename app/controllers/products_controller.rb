@@ -70,9 +70,28 @@ class ProductsController < ApplicationController
   # end
 
   def export
-    puts "----------------------export---------------"
     job_id = ExportProductJob.perform_async
-    puts "----------------------export---------------"
+    render json: { jid: job_id }
+  end
+
+  def export_status
+    job_id = params[:job_id]
+    # Check job status and percentage using JobId
+    job_status = Sidekiq::Status.get_all(job_id).symbolize_keys
+
+    render json: {
+      status: job_status[:status],
+      percentage: job_status[:pct_complete]
+    }
+  end
+
+  def export_download
+    job_id = params[:id]
+    exported_file_name = "products_export_#{job_id}.xlsx"
+    filename = "Products_#{DateTime.now.strftime("%Y%m%d_%H%M%S")}.xlsx"
+
+    # Start excel download
+    send_file Rails.root.join("tmp", exported_file_name), type: :xlsx, filename: filename
   end
 
   private

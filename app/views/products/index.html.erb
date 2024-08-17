@@ -3,6 +3,13 @@
 <%= link_to 'Export CSV', export_products_path(format: :csv) %> |
 <%= link_to 'Export Excel', export_products_path(format: :xlsx) %>
 
+<div data-controller="product-export">
+  <button data-action="click->product-export#test">Click me!</button>
+  <button data-action="click->product-export#export">Export Products</button>
+  <div data-product-export-target="status"></div>
+  <a data-product-export-target="download" class="hidden" download>Download</a>
+</div>
+
 <h1>Products</h1>
 
 <table>

@@ -2,12 +2,10 @@ class ExportProductJob
   include Sidekiq::Job
   include Sidekiq::Status::Worker
 
-  puts "*============================background job"
-
   def perform(*args)
-    puts "***************************product export"
     products = Product.all
     total products.size
+    at 0, "Job started"
     # Create Axlsx package and workbook
     xlsx_package = Axlsx::Package.new
     xlsx_workbook = xlsx_package.workbook
@@ -22,8 +20,21 @@ class ExportProductJob
         at idx
       end
     end
-    
+
+    # Delete xlsx file from tmp
+      tmp_folder_path = Rails.root.join('tmp', '*.xlsx')
+      # Get all .xlsx files in the tmp folder
+      xlsx_files = Dir.glob(tmp_folder_path)
+
+      # Delete each .xlsx file
+      xlsx_files.each do |file|
+        if File.exist?(file)
+          File.delete(file)
+        end
+      end
+
+    xlsx_package.serialize Rails.root.join("tmp", "products_export_#{self.jid}.xlsx")
+    at products.size, "Job completed"
     # Save file into tmp with suffix is jobId
-    xlsx_package.serialize Rails.root.join("tmp", "products_21_#{self.jid}.xlsx")
   end
 end

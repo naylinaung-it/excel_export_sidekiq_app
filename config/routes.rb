@@ -1,6 +1,10 @@
 Rails.application.routes.draw do
   resources :products do
-    collection { get :export } 
+    collection { 
+      get :export
+      get :export_status
+      get :export_download
+    } 
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

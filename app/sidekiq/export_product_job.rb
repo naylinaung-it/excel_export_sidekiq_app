@@ -3,6 +3,7 @@ class ExportProductJob
   include Sidekiq::Status::Worker
 
   def perform(*args)
+    file_number = *args[0]
     products = Product.all
     total products.size
     at 0, "Job started"
@@ -21,19 +22,18 @@ class ExportProductJob
       end
     end
 
-    # Delete xlsx file from tmp
-      tmp_folder_path = Rails.root.join('tmp', '*.xlsx')
-      # Get all .xlsx files in the tmp folder
-      xlsx_files = Dir.glob(tmp_folder_path)
+    # # Delete xlsx file from tmp
+    #   tmp_folder_path = Rails.root.join('tmp', '*.xlsx')
+    #   # Get all .xlsx files in the tmp folder
+    #   xlsx_files = Dir.glob(tmp_folder_path)
 
-      # Delete each .xlsx file
-      xlsx_files.each do |file|
-        if File.exist?(file)
-          File.delete(file)
-        end
-      end
-
-    xlsx_package.serialize Rails.root.join("tmp", "products_export_#{self.jid}.xlsx")
+    #   # Delete each .xlsx file
+    #   xlsx_files.each do |file|
+    #     if File.exist?(file)
+    #       File.delete(file)
+    #     end
+    #   end
+    xlsx_package.serialize Rails.root.join("tmp", "products_export_#{file_number[0]}.xlsx")
     at products.size, "Job completed"
     # Save file into tmp with suffix is jobId
   end

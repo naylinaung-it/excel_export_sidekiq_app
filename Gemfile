@@ -75,4 +75,6 @@ gem 'caxlsx_rails'
 gem 'sidekiq'
 gem 'sidekiq-status'
 
+# add for deleting xlsx download filein
+gem 'whenever', require: false
 

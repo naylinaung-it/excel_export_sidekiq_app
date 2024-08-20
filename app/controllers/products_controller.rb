@@ -70,8 +70,12 @@ class ProductsController < ApplicationController
   # end
 
   def export
-    job_id = ExportProductJob.perform_async
-    render json: { jid: job_id }
+    file_number = Time.now.to_i
+    job_id = ExportProductJob.perform_async(file_number)
+    render json: { 
+      jid: job_id,
+      file_number: file_number
+    }
   end
 
   def export_status
@@ -85,9 +89,11 @@ class ProductsController < ApplicationController
     }
   end
 
+  
   def export_download
     job_id = params[:id]
-    exported_file_name = "products_export_#{job_id}.xlsx"
+    file_number = params[:file_number]
+    exported_file_name = "products_export_#{file_number}.xlsx"
     filename = "Products_#{DateTime.now.strftime("%Y%m%d_%H%M%S")}.xlsx"
 
     # Start excel download

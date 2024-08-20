@@ -11,7 +11,7 @@
 env :PATH, ENV['PATH']
 set :output, "./log/cron.log"
 
-every 1.minutes do
+every 1.day, at: '12:00 am' do
     runner "Product.test_method"
 end
 

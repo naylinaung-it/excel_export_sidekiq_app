@@ -60,6 +60,7 @@ class ProductsController < ApplicationController
     end
   end
 
+  # smiple download
   # def export
   #   @products = Product.all
 
@@ -69,15 +70,31 @@ class ProductsController < ApplicationController
   #   end
   # end
 
+  # one page with background job download
+  # def export
+  #   file_number = Time.now.to_i
+  #   job_id = ExportProductJob.perform_async(file_number)
+  #   render json: { 
+  #     jid: job_id,
+  #     file_number: file_number
+  #   }
+  # end
+  
+  # another page with background job download
   def export
     file_number = Time.now.to_i
     job_id = ExportProductJob.perform_async(file_number)
-    render json: { 
-      jid: job_id,
-      file_number: file_number
-    }
+    redirect_to export_result_products_path(job_id: job_id, file_number: file_number)
   end
 
+  # for another page download
+  def export_result
+    @job_id = params[:job_id]
+    @file_number = params[:file_number]    
+    @job_status = Sidekiq::Status.get_all(@job_id).symbolize_keys
+  end
+
+  # for background job download
   def export_status
     job_id = params[:job_id]
     # Check job status and percentage using JobId
@@ -89,7 +106,7 @@ class ProductsController < ApplicationController
     }
   end
 
-  
+  # for background job download
   def export_download
     job_id = params[:id]
     file_number = params[:file_number]

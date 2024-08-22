@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       get :export
       get :export_status
       get :export_download
+      get :export_result
     } 
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

@@ -2,32 +2,40 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="product-export"
 export default class extends Controller {
-  test() {
-    console.log("=====================hello world! by testing" )
-  }
-  static targets = ["status", "download"];
 
-  export() {
-    console.log("===================== export function")
-    fetch('/products/export')
-      .then(response => response.json())
-      .then(data => {
-        const jobId = data.jid;
-        const fileNumber = data.file_number;
-        this.statusTarget.textContent = "Exporting ...";
+  static targets = ["status","jobid", "filenumber", "download"];
 
-        this.timer = setInterval(() => {
-          this.checkJobStatus(jobId, fileNumber)
-        }, 2000);
-      });
+  // static targets = ["status", "download"];
+  // for current page download
+  // export() {
+  //   fetch('/products/export')
+  //   .then(response => response.json())
+  //   .then(data => {
+  //     const jobId = data.jid;
+  //     const fileNumber = data.file_number;
+  //     this.statusTarget.textContent = "Exporting ...";
+
+  //     this.timer = setInterval(() => {
+  //       this.checkJobStatus(jobId, fileNumber)
+  //     }, 2000);
+  //   });
+  // }
+
+  // for another page download
+  connect() {
+    const jobId = this.jobidTarget.textContent;
+    const fileNumber = this.filenumberTarget.textContent;
+    this.statusTarget.textContent = "Exporting ..."
+
+    this.timer = setInterval(() => {
+      this.checkJobStatus(jobId, fileNumber)
+    }, 2000);
   }
 
   checkJobStatus(jobId, fileNumber) {
-    console.log("------------------ function start", fileNumber)
     fetch(`/products/export_status?job_id=${jobId}`)
       .then(response => response.json())
       .then(data => {
-        console.log("------------------", data)
         const percentage = data.percentage;
         this.statusTarget.textContent = `Exporting ${percentage}%`;
         if(data.percentage == "100") {

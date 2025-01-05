@@ -6,6 +6,7 @@ class ProductsController < ApplicationController
 
   # GET /products or /products.json
   def index
+    # tesitng
     @products = Product.all
   end
 
